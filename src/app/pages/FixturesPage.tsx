@@ -108,16 +108,6 @@ const fixtures: Fixture[] = [
     isHome: true
   },
   {
-    id: "doncaster",
-    opponent: "Doncaster RLFC",
-    date: "9 August",
-    time: "15:00",
-    venue: "Eirias Stadium",
-    location: "Colwyn Bay",
-    competition: "Betfred Championship",
-    isHome: false
-  },
-  {
     id: "swinton",
     opponent: "Swinton Lions",
     date: "16 August",
@@ -185,7 +175,7 @@ export function FixturesPage({ onNavigate }: FixturesPageProps) {
           </h1>
 
           <p className="text-gray-400 max-w-2xl mx-auto">
-            North Wales Crusaders 2026 season fixtures — click home games to buy tickets.
+            North Wales Crusaders 2026 season fixtures — home games only have tickets.
           </p>
         </motion.div>
 
@@ -235,23 +225,29 @@ export function FixturesPage({ onNavigate }: FixturesPageProps) {
                       {fixture.time}
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-red-500" />
-                      {fixture.venue} - {fixture.location}
-                    </div>
+                    {fixture.isHome && (
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-red-500" />
+                        {fixture.venue} - {fixture.location}
+                      </div>
+                    )}
 
                   </div>
 
                 </div>
 
-                {/* BUTTON (UPDATED) */}
-             <button
-  onClick={() => handleTicketClick(fixture)}
-  className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-black"
->
-  <Ticket className="w-4 h-4" />
-  BUY TICKETS
-</button>
+   <div className="flex items-center lg:justify-end justify-start">
+  {fixture.isHome && (
+    <button
+      onClick={() => handleTicketClick(fixture)}
+      className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-black"
+    >
+      <Ticket className="w-4 h-4" />
+      BUY TICKETS
+    </button>
+  )}
+</div>
+                
 
               </div>
 
@@ -264,4 +260,4 @@ export function FixturesPage({ onNavigate }: FixturesPageProps) {
       </div>
     </div>
   );
-} 
+}
