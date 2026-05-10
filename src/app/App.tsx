@@ -5,13 +5,15 @@ import { SEO } from "./components/SEO";
 import { ScrollToTop } from "./components/ScrollToTop";
 
 import { HomePage } from "./pages/HomePage";
-import { FixturesPage } from "./pages/FixturesPage";
 import { TicketsPage } from "./pages/TicketsPage";
 import { NewsPage } from "./pages/NewsPage";
 import { SponsorsPage } from "./pages/SponsorsPage";
 import { DonatePage } from "./pages/DonatePage";
+import { FixturesPage } from "./pages/FixturesPage";
 
+/* ✅ FIXED TYPE */
 interface SelectedMatch {
+  id: string;
   match: string;
   date: string;
   time: string;
@@ -22,9 +24,21 @@ interface SelectedMatch {
 export default function App() {
   const [currentPage, setCurrentPage] = useState("home");
 
-  /* SELECTED MATCH STATE */
   const [selectedMatch, setSelectedMatch] =
     useState<SelectedMatch | null>(null);
+
+  /* ✅ IMPORTANT: LISTEN CUSTOM NAVIGATION EVENTS */
+  useEffect(() => {
+    const handler = (e: any) => {
+      if (e.detail?.page) {
+        setCurrentPage(e.detail.page);
+      }
+    };
+
+    window.addEventListener("navigate", handler);
+
+    return () => window.removeEventListener("navigate", handler);
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
@@ -37,11 +51,8 @@ export default function App() {
     });
   }, [currentPage]);
 
-  /* NAVIGATION */
-  const handleNavigate = (
-    page: string,
-    data?: SelectedMatch
-  ) => {
+  /* NAVIGATION HANDLER */
+  const handleNavigate = (page: string, data?: SelectedMatch) => {
     setCurrentPage(page);
 
     if (data) {
@@ -49,7 +60,7 @@ export default function App() {
     }
   };
 
-  /* PAGES */
+  /* PAGE ROUTER */
   const renderPage = () => {
     switch (currentPage) {
       case "home":
@@ -60,9 +71,7 @@ export default function App() {
 
       case "tickets":
         return (
-          <TicketsPage
-            selectedMatch={selectedMatch || undefined}
-          />
+          <TicketsPage selectedMatch={selectedMatch || undefined} />
         );
 
       case "news":
@@ -82,9 +91,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black">
       <SEO
-        title="North Wales Crusaders | Rugby League Club | Eirias Stadium"
-        description="Official North Wales Crusaders website. Buy match tickets, season passes, support the club, view fixtures, and stay updated with the latest rugby league news."
-        keywords="North Wales Crusaders, rugby league Wales, Eirias Stadium, rugby tickets, season tickets, Welsh rugby club"
+        title="North Wales Crusaders | Rugby League Club"
+        description="Official rugby league club website"
+        keywords="rugby, wales, tickets, fixtures"
       />
 
       <WelshNavbar

@@ -226,27 +226,23 @@ export function SponsorsPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-1 gap-6">
 
-              <div className="bg-black/50 border border-white/10 rounded-xl p-6 flex items-center gap-4">
-                <Mail className="w-10 h-10 text-red-500" />
-                <div>
-                  <div className="text-sm text-gray-400">Email</div>
-                  <div className="text-white font-bold">
-                    admin@northwalesrugby.com
-                  </div>
-                </div>
-              </div>
+            <a
+  href="mailto:admin@northwalesrugby.com"
+  className="bg-black/50 border border-white/10 rounded-xl p-6 flex items-center gap-4 hover:border-red-500 transition"
+>
+  <Mail className="w-10 h-10 text-red-500" />
 
-              <div className="bg-black/50 border border-white/10 rounded-xl p-6 flex items-center gap-4">
-                <Phone className="w-10 h-10 text-green-500" />
-                <div>
-                  <div className="text-sm text-gray-400">Phone</div>
-                  <div className="text-white font-bold">
-                    +44 29 2087 4000
-                  </div>
-                </div>
-              </div>
+  <div>
+    <div className="text-sm text-gray-400">Email</div>
+    <div className="text-white font-bold">
+      admin@northwalesrugby.com
+    </div>
+  </div>
+</a>
+
+           
 
             </div>
 
