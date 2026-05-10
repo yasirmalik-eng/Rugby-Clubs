@@ -1,12 +1,6 @@
 import { motion } from "motion/react";
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
 
-const socialLinks = [
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Youtube, href: "#", label: "YouTube" }
-];
 
 export function Footer() {
   return (
@@ -23,20 +17,7 @@ export function Footer() {
             <p className="text-gray-400 mb-4">
               Building champions on and off the field since 1899
             </p>
-            <div className="flex gap-3">
-              {socialLinks.map((social, index) => (
-                <motion.a
-                  key={index}
-                  href={social.href}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors"
-                  aria-label={social.label}
-                >
-                  <social.icon className="w-5 h-5 text-white" />
-                </motion.a>
-              ))}
-            </div>
+           
           </motion.div>
 
           <motion.div
@@ -73,13 +54,10 @@ export function Footer() {
                 <MapPin className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" />
                 <span className="text-sm sm:text-base">123 Rugby Road, Cardiff, Wales CF10 1AA</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <span className="text-sm sm:text-base">+44 29 2087 4000</span>
-              </li>
+             
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <span className="text-sm sm:text-base">info@welshrugby.com</span>
+                <span className="text-sm sm:text-base">admin@northwalesrugby.com</span>
               </li>
             </ul>
           </motion.div>

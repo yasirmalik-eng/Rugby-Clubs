@@ -1,11 +1,21 @@
 import { motion } from "motion/react";
 import { Calendar, MapPin, Clock, Ticket, Trophy } from "lucide-react";
 
-interface FixturesPageProps {
-  onNavigate: (page: string) => void;
+interface Fixture {
+  opponent: string;
+  date: string;
+  time: string;
+  venue: string;
+  location: string;
+  competition: string;
+  isHome: boolean;
 }
 
-const fixtures = [
+interface FixturesPageProps {
+  onNavigate: (page: string, data?: any) => void;
+}
+
+const fixtures: Fixture[] = [
   {
     opponent: "Llanelli Scarlets",
     date: "May 15, 2026",
@@ -63,126 +73,159 @@ const fixtures = [
 ];
 
 export function FixturesPage({ onNavigate }: FixturesPageProps) {
+
+  const handleTicketClick = (fixture: Fixture) => {
+    onNavigate("tickets", {
+      match: fixture.opponent,
+      date: fixture.date,
+      time: fixture.time,
+      venue: fixture.venue,
+      competition: fixture.competition,
+      location: fixture.location
+    });
+  };
+
   return (
     <div className="min-h-screen bg-black pt-24 pb-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* HEADER */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-block px-4 py-2 bg-red-800/30 border border-red-600 rounded-full mb-4">
-            <span className="text-red-400 font-bold text-sm flex items-center gap-2">
-              <Trophy className="w-4 h-4" />
-              2026 SEASON
+
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-900/30 border border-red-700 rounded-full mb-5">
+            <Trophy className="w-4 h-4 text-red-400" />
+            <span className="text-red-400 font-bold text-sm tracking-wide">
+              2026 SEASON FIXTURES
             </span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-white mb-4">
+
+          <h1 className="text-5xl md:text-6xl font-black text-white mb-5">
             MATCH FIXTURES
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Join us at Eirias Stadium for an unforgettable match-day experience
+
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+            Follow North Wales Crusaders throughout the 2026 season and secure
+            your tickets for upcoming home fixtures at Stadiwm Eirias.
           </p>
+
         </motion.div>
 
+        {/* FIXTURES */}
         <div className="max-w-5xl mx-auto space-y-6">
+
           {fixtures.map((fixture, index) => (
+
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.02, x: 8 }}
-              className="group relative"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08 }}
+              whileHover={{ scale: 1.015 }}
+              className="group"
             >
-              {fixture.isHome && (
-                <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-red-600 to-green-700 rounded-full"></div>
-              )}
 
-              <div className={`rounded-2xl p-6 md:p-8 transition-all duration-300 border-2 ${
-                fixture.isHome
-                  ? "bg-gradient-to-br from-red-900/40 to-black/60 border-red-600 hover:shadow-2xl hover:shadow-red-900/50"
-                  : "bg-gradient-to-br from-gray-900/40 to-black/60 border-gray-700 hover:border-gray-600"
-              }`}>
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <div
+                className={`rounded-3xl p-6 md:p-8 border transition-all duration-300 ${
+                  fixture.isHome
+                    ? "border-red-700 bg-gradient-to-br from-red-950/40 via-black to-green-950/20 hover:shadow-2xl hover:shadow-red-900/30"
+                    : "border-gray-800 bg-gradient-to-br from-black to-zinc-900"
+                }`}
+              >
+
+                <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+
+                  {/* LEFT SIDE */}
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                        fixture.isHome
-                          ? "bg-red-600 text-white"
-                          : "bg-gray-700 text-gray-300"
-                      }`}>
+
+                    {/* BADGES */}
+                    <div className="flex flex-wrap gap-3 mb-5">
+
+                      <span
+                        className={`px-4 py-1.5 text-xs font-bold rounded-full tracking-wide ${
+                          fixture.isHome
+                            ? "bg-green-700 text-white"
+                            : "bg-gray-700 text-gray-300"
+                        }`}
+                      >
                         {fixture.isHome ? "HOME MATCH" : "AWAY MATCH"}
-                      </div>
-                      <div className="px-3 py-1 bg-green-900/50 border border-green-700 rounded-full text-xs font-bold text-green-400">
+                      </span>
+
+                      <span className="px-4 py-1.5 text-xs font-bold bg-red-900/40 border border-red-700 text-red-300 rounded-full tracking-wide">
                         {fixture.competition}
-                      </div>
+                      </span>
+
                     </div>
 
-                    <h3 className="text-2xl md:text-3xl font-black text-white mb-4 group-hover:text-red-400 transition-colors">
-                      WELSH RFC vs {fixture.opponent.toUpperCase()}
-                    </h3>
+                    {/* TITLE */}
+                    <h2 className="text-2xl md:text-3xl font-black text-white mb-5 group-hover:text-red-400 transition-colors duration-300">
+                      NORTH WALES CRUSADERS vs{" "}
+                      {fixture.opponent.toUpperCase()}
+                    </h2>
 
-                    <div className="grid sm:grid-cols-3 gap-4 text-gray-300">
-                      <div className="flex items-center gap-2">
+                    {/* INFO */}
+                    <div className="grid sm:grid-cols-3 gap-5 text-gray-300">
+
+                      <div className="flex items-center gap-3">
                         <Calendar className="w-5 h-5 text-red-500 flex-shrink-0" />
-                        <span className="font-semibold">{fixture.date}</span>
+                        <span className="font-medium">{fixture.date}</span>
                       </div>
-                      <div className="flex items-center gap-2">
+
+                      <div className="flex items-center gap-3">
                         <Clock className="w-5 h-5 text-red-500 flex-shrink-0" />
-                        <span className="font-semibold">{fixture.time} KO</span>
+                        <span className="font-medium">
+                          {fixture.time} KO
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2">
+
+                      <div className="flex items-center gap-3">
                         <MapPin className="w-5 h-5 text-red-500 flex-shrink-0" />
                         <div>
-                          <div className="font-semibold">{fixture.venue}</div>
-                          <div className="text-sm text-gray-500">{fixture.location}</div>
+                          <div className="font-medium">{fixture.venue}</div>
+                          <div className="text-sm text-gray-500">
+                            {fixture.location}
+                          </div>
                         </div>
                       </div>
+
                     </div>
+
+                    {/* HOME STADIUM LABEL */}
+                    {fixture.isHome && (
+                      <div className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-900/30 border border-green-700 text-green-400 text-xs font-bold tracking-wide">
+                        STADIWM EIRIAS HOME GAME
+                      </div>
+                    )}
+
                   </div>
 
+                  {/* BUTTON */}
                   {fixture.isHome && (
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => onNavigate("tickets")}
-                      className="px-8 py-4 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold shadow-lg border-2 border-red-600 flex items-center justify-center gap-2 whitespace-nowrap"
+                      onClick={() => handleTicketClick(fixture)}
+                      className="px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white rounded-full font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg whitespace-nowrap"
                     >
-                      <Ticket className="w-5 h-5" />
+                      <Ticket className="w-4 h-4" />
                       BUY TICKETS
                     </motion.button>
                   )}
+
                 </div>
+
               </div>
+
             </motion.div>
+
           ))}
+
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-16 text-center"
-        >
-          <div className="bg-gradient-to-r from-red-900/20 via-green-900/20 to-red-900/20 border-2 border-red-600/30 rounded-2xl p-8 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-black text-white mb-4">
-              SEASON TICKETS AVAILABLE
-            </h3>
-            <p className="text-gray-300 mb-6">
-              Secure your seat for every home match and save up to 40%
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onNavigate("tickets")}
-              className="px-10 py-4 bg-gradient-to-r from-green-700 to-green-800 text-white rounded-lg font-bold shadow-lg border-2 border-green-600"
-            >
-              VIEW SEASON TICKETS
-            </motion.button>
-          </div>
-        </motion.div>
       </div>
     </div>
   );

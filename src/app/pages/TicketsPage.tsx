@@ -1,210 +1,210 @@
 import { motion } from "motion/react";
-import { Ticket, Star, Check, CreditCard } from "lucide-react";
+import {
+  Ticket,
+  Check,
+  CreditCard,
+  Calendar,
+  MapPin,
+} from "lucide-react";
 import { useState } from "react";
 
-export function TicketsPage() {
+interface TicketsPageProps {
+  selectedMatch?: {
+    match: string;
+    date: string;
+    venue: string;
+    competition: string;
+  };
+}
+
+export function TicketsPage({ selectedMatch }: TicketsPageProps) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [showCheckout, setShowCheckout] = useState(false);
 
+  /* ONLY MATCH TICKETS (UPDATED) */
   const matchTickets = [
-    { id: "hospitality", title: "Hospitality", price: 35, features: ["Premium seating", "Meal", "Drinks", "VIP lounge"] },
-    { id: "adult", title: "Adult", price: 20, features: ["Standard seating", "Program", "Fan zone"] },
-    { id: "child", title: "Child", price: 5, features: ["Standard seating", "Program", "Kids pack"] },
+    {
+      id: "hospitality",
+      title: "Hospitality",
+      price: 35,
+      features: ["Premium Seating", "Meal Included", "VIP Lounge"],
+    },
+    {
+      id: "adult",
+      title: "Adult",
+      price: 15,
+      features: ["Standard Seating", "Match Access"],
+    },
+    {
+      id: "child",
+      title: "Child",
+      price: 2.5,
+      features: ["Kids Access", "Family Area"],
+    },
   ];
 
-  const seasonTickets = [
-    { id: "season-adult", title: "Adult Season Ticket", price: 99, subtitle: "Save 40%", features: ["All home matches", "Priority seating"] },
-    { id: "season-family", title: "Family Season Ticket", price: 150, subtitle: "2+2", features: ["All matches", "Family seating"] },
-    { id: "season-kids", title: "Kids Season Ticket", price: 20, subtitle: "Best value", features: ["All matches", "Kids zone"] },
-  ];
+  const allTickets = [...matchTickets];
 
   const updateQuantity = (id: string, delta: number) => {
-    setQuantities(prev => ({
+    setQuantities((prev) => ({
       ...prev,
       [id]: Math.max(0, (prev[id] || 0) + delta),
     }));
   };
 
-  const allTickets = [...matchTickets, ...seasonTickets];
-
   const totalCost = Object.entries(quantities).reduce((sum, [id, qty]) => {
-    const ticket = allTickets.find(t => t.id === id);
-    return sum + (ticket?.price || 0) * qty;
+    const ticket = allTickets.find((t) => t.id === id);
+
+    if (ticket) {
+      return sum + ticket.price * qty;
+    }
+
+    return sum;
   }, 0);
 
   return (
     <div className="min-h-screen bg-black pt-24 pb-20">
-
       <div className="container mx-auto px-4">
 
         {/* HEADER */}
-        <motion.div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-6xl font-black text-white">TICKETS</h1>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl sm:text-6xl font-black text-white">
+            MATCH TICKETS
+          </h1>
+
           <p className="text-gray-400 mt-3 text-sm sm:text-lg">
-            Experience Welsh Rugby Live
+            Buy tickets for North Wales Crusaders
           </p>
         </motion.div>
 
+        {/* SELECTED MATCH */}
+        {selectedMatch && (
+          <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-gradient-to-r from-red-900/40 to-black border border-red-700 rounded-3xl p-6">
+
+              <h2 className="text-3xl font-black text-white mb-4">
+                NORTH WALES CRUSADERS vs {selectedMatch.match.toUpperCase()}
+              </h2>
+
+              <div className="flex gap-4 text-gray-300">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-red-500" />
+                  {selectedMatch.date}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-red-500" />
+                  {selectedMatch.venue}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
         {/* MATCH TICKETS */}
-        <div className="mb-16">
-          <h2 className="text-2xl sm:text-3xl font-black text-white mb-6 flex gap-2 items-center">
-            <Ticket className="text-red-500" /> Match Tickets
-          </h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {matchTickets.map((ticket) => (
+            <motion.div
+              key={ticket.id}
+              whileHover={{ scale: 1.03 }}
+              className="bg-gradient-to-br from-red-900/20 to-black border border-red-800/50 rounded-3xl p-6"
+            >
+              <h3 className="text-white font-black text-2xl">
+                {ticket.title}
+              </h3>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            {matchTickets.map(ticket => (
-              <div key={ticket.id} className="bg-red-900/20 p-5 rounded-2xl border border-red-800/50">
-
-                <h3 className="text-white font-bold text-xl sm:text-2xl">{ticket.title}</h3>
-                <div className="text-red-400 text-2xl sm:text-3xl font-black my-2">
-                  £{ticket.price}
-                </div>
-
-                <ul className="text-gray-300 text-sm space-y-1 mb-4">
-                  {ticket.features.map((f, i) => (
-                    <li key={i} className="flex gap-2">
-                      <Check className="w-4 h-4 text-green-500" /> {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex items-center justify-center gap-3">
-                  <button onClick={() => updateQuantity(ticket.id, -1)} className="w-9 h-9 bg-red-800 text-white rounded">-</button>
-                  <span className="text-white font-bold">{quantities[ticket.id] || 0}</span>
-                  <button onClick={() => updateQuantity(ticket.id, 1)} className="w-9 h-9 bg-red-800 text-white rounded">+</button>
-                </div>
-
+              <div className="text-red-400 text-4xl font-black my-4">
+                £{ticket.price}
               </div>
-            ))}
 
-          </div>
+              <ul className="space-y-2 mb-6">
+                {ticket.features.map((feature, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center gap-2 text-gray-300 text-sm"
+                  >
+                    <Check className="w-4 h-4 text-green-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <button
+                  onClick={() => updateQuantity(ticket.id, -1)}
+                  className="w-10 h-10 rounded-full bg-red-700 text-white text-xl"
+                >
+                  -
+                </button>
+
+                <span className="text-white font-black text-xl">
+                  {quantities[ticket.id] || 0}
+                </span>
+
+                <button
+                  onClick={() => updateQuantity(ticket.id, 1)}
+                  className="w-10 h-10 rounded-full bg-red-700 text-white text-xl"
+                >
+                  +
+                </button>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        {/* SEASON TICKETS */}
-        <div className="mb-16">
-          <h2 className="text-2xl sm:text-3xl font-black text-white mb-6 flex gap-2 items-center">
-            <Star className="text-green-500" /> Season Tickets
-          </h2>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            {seasonTickets.map(ticket => (
-              <div key={ticket.id} className="bg-green-900/20 p-5 rounded-2xl border border-green-800/50">
-
-                <h3 className="text-white font-bold text-xl sm:text-2xl">{ticket.title}</h3>
-                <p className="text-green-400 text-sm">{ticket.subtitle}</p>
-
-                <div className="text-green-400 text-2xl sm:text-3xl font-black my-2">
-                  £{ticket.price}
-                </div>
-
-                <ul className="text-gray-300 text-sm space-y-1 mb-4">
-                  {ticket.features.map((f, i) => (
-                    <li key={i} className="flex gap-2">
-                      <Check className="w-4 h-4 text-green-500" /> {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex items-center justify-center gap-3">
-                  <button onClick={() => updateQuantity(ticket.id, -1)} className="w-9 h-9 bg-green-800 text-white rounded">-</button>
-                  <span className="text-white font-bold">{quantities[ticket.id] || 0}</span>
-                  <button onClick={() => updateQuantity(ticket.id, 1)} className="w-9 h-9 bg-green-800 text-white rounded">+</button>
-                </div>
-
-              </div>
-            ))}
-
-          </div>
-        </div>
-
-        {/* CHECKOUT BAR */}
+        {/* CHECKOUT */}
         {totalCost > 0 && (
-          <div className="sticky bottom-6 bg-gradient-to-r from-red-900 to-green-900 border border-white/20 rounded-2xl p-6">
+          <div className="sticky bottom-6 mt-10 max-w-4xl mx-auto">
+            <div className="bg-red-900 p-6 rounded-3xl flex justify-between items-center">
 
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-
-              <div>
-                <p className="text-gray-300 text-sm">Total Amount</p>
-                <h3 className="text-3xl font-black text-white">
-                  £{totalCost.toFixed(2)}
-                </h3>
-              </div>
+              <h3 className="text-white text-3xl font-black">
+                £{totalCost.toFixed(2)}
+              </h3>
 
               <button
                 onClick={() => setShowCheckout(true)}
-                className="px-10 py-4 bg-white text-black font-black rounded-lg flex items-center gap-2"
+                className="bg-white text-black px-8 py-3 rounded-full font-black"
               >
-                <CreditCard />
-                CHECKOUT
+                Checkout
               </button>
 
             </div>
-
           </div>
         )}
 
       </div>
 
-      {/* CHECKOUT MODAL */}
+      {/* SIMPLE CHECKOUT */}
       {showCheckout && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-zinc-900 p-6 rounded-2xl w-full max-w-xl">
 
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-full max-w-2xl bg-zinc-900 rounded-3xl p-6 sm:p-8 relative"
-          >
+            <h2 className="text-white text-2xl font-black mb-4">
+              Checkout
+            </h2>
+
+            <input className="w-full p-3 mb-3 bg-black text-white rounded" placeholder="Name" />
+            <input className="w-full p-3 mb-3 bg-black text-white rounded" placeholder="Email" />
+
+            <button className="w-full bg-red-700 text-white py-3 rounded font-black">
+              Pay Now
+            </button>
 
             <button
               onClick={() => setShowCheckout(false)}
-              className="absolute top-3 right-3 text-white text-2xl"
+              className="w-full mt-3 text-gray-400"
             >
-              ×
+              Close
             </button>
 
-            <h2 className="text-2xl sm:text-3xl font-black text-white mb-4 text-center">
-              Payment Details
-            </h2>
-
-            {/* ORDER SUMMARY */}
-            <div className="mb-4 text-gray-300 text-sm space-y-1">
-              {Object.entries(quantities).map(([id, qty]) => {
-                if (qty === 0) return null;
-
-                const ticket = allTickets.find(t => t.id === id);
-
-                return (
-                  <div key={id} className="flex justify-between">
-                    <span>{ticket?.title} × {qty}</span>
-                    <span>£{((ticket?.price || 0) * qty).toFixed(2)}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* FORM */}
-            <div className="grid sm:grid-cols-2 gap-3">
-
-              <input className="p-3 bg-black border text-white rounded" placeholder="First Name" />
-              <input className="p-3 bg-black border text-white rounded" placeholder="Last Name" />
-              <input className="sm:col-span-2 p-3 bg-black border text-white rounded" placeholder="Email" />
-              <input className="sm:col-span-2 p-3 bg-black border text-white rounded" placeholder="Card Number" />
-              <input className="p-3 bg-black border text-white rounded" placeholder="MM/YY" />
-              <input className="p-3 bg-black border text-white rounded" placeholder="CVV" />
-
-            </div>
-
-            <button className="w-full mt-6 bg-red-700 text-white py-4 rounded-xl font-black">
-              PAY NOW
-            </button>
-
-          </motion.div>
-
+          </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -1,5 +1,13 @@
 import { motion, useScroll, useTransform } from "motion/react";
-import { Menu, X, Shield, Ticket, Calendar, Users, Newspaper, Trophy } from "lucide-react";
+import {
+  Menu,
+  X,
+  Ticket,
+  Calendar,
+  Newspaper,
+  Trophy,
+  Heart,
+} from "lucide-react";
 import { useState } from "react";
 
 interface WelshNavbarProps {
@@ -7,22 +15,27 @@ interface WelshNavbarProps {
   onNavigate: (page: string) => void;
 }
 
-export function WelshNavbar({ currentPage, onNavigate }: WelshNavbarProps) {
+export function WelshNavbar({
+  currentPage,
+  onNavigate,
+}: WelshNavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+
   const { scrollY } = useScroll();
+
   const backgroundColor = useTransform(
     scrollY,
     [0, 100],
     ["rgba(10, 10, 10, 0)", "rgba(10, 10, 10, 0.95)"]
   );
 
+  // Club removed
   const navLinks = [
-    { name: "Home", icon: Shield, page: "home" },
+    { name: "Home", page: "home" },
     { name: "Fixtures", icon: Calendar, page: "fixtures" },
     { name: "Tickets", icon: Ticket, page: "tickets" },
-    { name: "Club", icon: Users, page: "club" },
     { name: "News", icon: Newspaper, page: "news" },
-    { name: "Sponsors", icon: Trophy, page: "sponsors" }
+    { name: "Sponsors", icon: Trophy, page: "sponsors" },
   ];
 
   return (
@@ -32,6 +45,8 @@ export function WelshNavbar({ currentPage, onNavigate }: WelshNavbarProps) {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
+          
+          {/* Logo Section */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -39,26 +54,35 @@ export function WelshNavbar({ currentPage, onNavigate }: WelshNavbarProps) {
             onClick={() => onNavigate("home")}
           >
             <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-800 to-red-900 rounded-lg flex items-center justify-center border-2 border-red-600 shadow-lg shadow-red-900/50">
-                <Shield className="w-7 h-7 text-white" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-700 rounded-full border-2 border-black"></div>
+              <img
+                src="/logo.png"
+                alt="North Wales Crusaders"
+                className="w-14 h-14 object-contain"
+              />
             </div>
+
             <div>
-              <div className="text-xl font-bold text-white tracking-tight">WELSH RFC</div>
-              <div className="text-xs text-green-500 font-semibold">EST. 1899</div>
+              <div className="text-lg sm:text-xl font-bold text-white tracking-tight leading-tight">
+                North Wales 
+              </div>
+
+              <div className="text-xs text-red-500 font-semibold tracking-[2px] uppercase">
+                Crusaders
+              </div>
             </div>
           </motion.div>
 
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-2">
             {navLinks.map((link, index) => {
               const Icon = link.icon;
+
               return (
                 <motion.button
                   key={link.page}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.08 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
@@ -71,33 +95,68 @@ export function WelshNavbar({ currentPage, onNavigate }: WelshNavbarProps) {
                       : "text-gray-300 hover:bg-white/5 hover:text-white"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  {Icon && <Icon className="w-4 h-4" />}
                   {link.name}
                 </motion.button>
               );
             })}
           </div>
 
-          <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigate("tickets")}
-            className="hidden lg:block px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold hover:shadow-lg hover:shadow-red-900/50 transition-all duration-200 border border-red-600"
-          >
-            BUY TICKETS
-          </motion.button>
+          {/* Desktop Buttons */}
+          <div className="hidden lg:flex items-center gap-3">
+            
+            {/* Donate Button */}
+            {/* <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold hover:shadow-lg hover:shadow-red-900/50 transition-all duration-200 border border-red-600 flex items-center gap-2"
+            >
+              <Heart className="w-4 h-4" />
+              DONATE
+            </motion.button> */}
+            <motion.button
+  onClick={() => onNavigate("donate")}   // 👈 THIS CONNECTS PAGE
+  initial={{ opacity: 0, x: 20 }}
+  animate={{ opacity: 1, x: 0 }}
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  className="px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold hover:shadow-lg hover:shadow-red-900/50 transition-all duration-200 border border-red-600 flex items-center gap-2"
+>
+  <Heart className="w-4 h-4" />
+  DONATE
+</motion.button>
 
+            {/* Buy Tickets Button */}
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onNavigate("tickets")}
+              className="px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold hover:shadow-lg hover:shadow-red-900/50 transition-all duration-200 border border-red-600 flex items-center gap-2"
+            >
+              <Ticket className="w-4 h-4" />
+              BUY TICKETS
+            </motion.button>
+          </div>
+
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden text-white p-2"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
       </div>
 
+      {/* Mobile Menu */}
       <motion.div
         initial={false}
         animate={{ height: isOpen ? "auto" : 0 }}
@@ -106,6 +165,7 @@ export function WelshNavbar({ currentPage, onNavigate }: WelshNavbarProps) {
         <div className="container mx-auto px-4 py-4 space-y-2">
           {navLinks.map((link) => {
             const Icon = link.icon;
+
             return (
               <motion.button
                 key={link.page}
@@ -120,22 +180,39 @@ export function WelshNavbar({ currentPage, onNavigate }: WelshNavbarProps) {
                     : "text-gray-300 hover:bg-white/5"
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                {Icon && <Icon className="w-5 h-5" />}
                 {link.name}
               </motion.button>
             );
           })}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              onNavigate("tickets");
-              setIsOpen(false);
-            }}
-            className="w-full px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold mt-2 border border-red-600"
-          >
-            BUY TICKETS
-          </motion.button>
+
+          {/* Mobile Buttons */}
+          <div className="pt-3 space-y-3">
+            
+            {/* Donate Button */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold border border-red-600 flex items-center justify-center gap-2"
+            >
+              <Heart className="w-4 h-4" />
+              DONATE
+            </motion.button>
+
+            {/* Buy Tickets Button */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                onNavigate("tickets");
+                setIsOpen(false);
+              }}
+              className="w-full px-6 py-3 bg-gradient-to-r from-red-700 to-red-800 text-white rounded-lg font-bold border border-red-600 flex items-center justify-center gap-2"
+            >
+              <Ticket className="w-4 h-4" />
+              BUY TICKETS
+            </motion.button>
+          </div>
         </div>
       </motion.div>
     </motion.nav>
