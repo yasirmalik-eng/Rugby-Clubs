@@ -1,8 +1,153 @@
 import { motion } from "motion/react";
 import { Calendar, MapPin, Clock, Ticket, Trophy } from "lucide-react";
-import { useNavigate } from "react-router";
-import { useFixtures } from "../../hooks/useFixtures";
-import { format } from "date-fns";
+
+interface Fixture {
+  id: string;
+  opponent: string;
+  date: string;
+  time: string;
+  venue: string;
+  location: string;
+  competition: string;
+  isHome: boolean;
+}
+
+interface FixturesPageProps {
+  onNavigate: (page: string, data?: any) => void;
+}
+
+const fixtures: Fixture[] = [
+  {
+    id: "batley",
+    opponent: "Batley Bulldogs",
+    date: "24 May",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: false
+  },
+  {
+    id: "salford1",
+    opponent: "Salford RLFC",
+    date: "31 May",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: true
+  },
+  {
+    id: "london",
+    opponent: "London Broncos",
+    date: "7 June",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: true
+  },
+  {
+    id: "whitehaven",
+    opponent: "Whitehaven",
+    date: "14 June",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: false
+  },
+  {
+    id: "halifax",
+    opponent: "Halifax Panthers",
+    date: "21 June",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: true
+  },
+  {
+    id: "salford2",
+    opponent: "Salford RLFC",
+    date: "5 July",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: false
+  },
+  {
+    id: "widnes",
+    opponent: "Widnes Vikings",
+    date: "12 July",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: true
+  },
+  {
+    id: "newcastle",
+    opponent: "Newcastle Thunder",
+    date: "19 July",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: true
+  },
+  {
+    id: "goole",
+    opponent: "Goole Vikings",
+    date: "2 August",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: true
+  },
+  {
+    id: "doncaster",
+    opponent: "Doncaster RLFC",
+    date: "9 August",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: false
+  },
+  {
+    id: "swinton",
+    opponent: "Swinton Lions",
+    date: "16 August",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: false
+  },
+  {
+    id: "keighley",
+    opponent: "Keighley Cougars",
+    date: "23 August",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: true
+  },
+  {
+    id: "midlands",
+    opponent: "Midlands Hurricanes",
+    date: "30 August",
+    time: "15:00",
+    venue: "Eirias Stadium",
+    location: "Colwyn Bay",
+    competition: "Betfred Championship",
+    isHome: false
+  }
+];
 
 export function FixturesPage() {
   const navigate = useNavigate();
@@ -23,8 +168,8 @@ export function FixturesPage() {
 
           <h1 className="mb-5 text-5xl font-black text-white">MATCH FIXTURES</h1>
 
-          <p className="mx-auto max-w-2xl text-gray-400">
-            North Wales Crusaders 2026 season fixtures. Home games have tickets available.
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            North Wales Crusaders 2026 season fixtures — click home games to buy tickets.
           </p>
         </motion.div>
 
@@ -84,12 +229,9 @@ export function FixturesPage() {
                         {fixture.kick_off_time.slice(0, 5)}
                       </div>
 
-                      {fixture.is_home && (
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-red-500" />
-                          {fixture.venue}
-                        </div>
-                      )}
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-red-500" />
+                      {fixture.venue} - {fixture.location}
                     </div>
 
                     {fixture.home_score !== null && fixture.away_score !== null && (
@@ -112,31 +254,25 @@ export function FixturesPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center">
-                    {fixture.tickets_available && fixture.is_home ? (
-                      <button
-                        onClick={() => navigate(`/tickets?fixture=${fixture.id}`)}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 font-semibold text-white transition-all duration-200 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-black"
-                      >
-                        <Ticket className="h-4 w-4" />
-                        BUY TICKETS
-                      </button>
-                    ) : fixture.is_home ? (
-                      <span className="rounded-xl border border-gray-700 px-4 py-2 text-sm text-gray-500">
-                        {fixture.home_score !== null ? "Match Ended" : "Tickets TBA"}
-                      </span>
-                    ) : (
-                      <span className="rounded-xl border border-gray-800 px-4 py-2 text-sm text-gray-600">
-                        Away Match
-                      </span>
-                    )}
-                  </div>
                 </div>
-              </motion.div>
-            ))
-          )}
+
+                {/* BUTTON (UPDATED) */}
+             <button
+  onClick={() => handleTicketClick(fixture)}
+  className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-black"
+>
+  <Ticket className="w-4 h-4" />
+  BUY TICKETS
+</button>
+
+              </div>
+
+            </motion.div>
+
+          ))}
+
         </div>
       </div>
     </div>
   );
-}
+} 
