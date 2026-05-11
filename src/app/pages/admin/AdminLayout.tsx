@@ -1,6 +1,6 @@
 import { Navigate, Outlet, Link, useLocation } from "react-router";
 import { useAuth } from "../../../context/AuthContext";
-import { Loader2, LayoutDashboard, Calendar, Newspaper, Ticket, ShoppingBag, LogOut, Shield, Trophy } from "lucide-react";
+import { Loader2, LayoutDashboard, Calendar, Newspaper, Ticket, ShoppingBag, LogOut, Shield, Trophy, Users } from "lucide-react";
 
 const ownerLinks = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -9,6 +9,7 @@ const ownerLinks = [
   { to: "/admin/tickets", label: "Tickets", icon: Ticket },
   { to: "/admin/sponsors", label: "Sponsors", icon: Trophy },
   { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
+  { to: "/admin/users", label: "Users & Accounts", icon: Users },
 ];
 
 const writerLinks = [

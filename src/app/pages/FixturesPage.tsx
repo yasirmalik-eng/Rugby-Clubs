@@ -45,7 +45,10 @@ export function FixturesPage() {
           ) : fixtures.length === 0 ? (
             <p className="py-20 text-center text-gray-500">No fixtures found right now.</p>
           ) : (
-            fixtures.map((fixture, index) => (
+            fixtures.map((fixture, index) => {
+              const isPast = new Date(fixture.match_date) < new Date(new Date().toISOString().split("T")[0]);
+
+              return (
               <motion.div
                 key={fixture.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -113,25 +116,28 @@ export function FixturesPage() {
                   <div className="flex items-start">
                     <button
                       onClick={() =>
-                        fixture.is_home &&
+                        fixture.is_home && !isPast &&
                         navigate(
                           fixture.tickets_available ? `/tickets?fixture=${fixture.id}` : "/tickets",
                         )
                       }
-                      disabled={!fixture.is_home}
+                      disabled={!fixture.is_home || isPast}
                       className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-black ${
-                        fixture.is_home
-                          ? "bg-red-600 text-white hover:bg-red-500"
-                          : "cursor-not-allowed border border-white/10 bg-white/5 text-gray-500"
+                        isPast 
+                          ? "cursor-not-allowed border border-white/10 bg-white/5 text-gray-500"
+                          : fixture.is_home
+                            ? "bg-red-600 text-white hover:bg-red-500"
+                            : "cursor-not-allowed border border-white/10 bg-white/5 text-gray-500"
                       }`}
                     >
                       <Ticket className="h-4 w-4" />
-                      {fixture.is_home ? "BUY TICKETS" : "AWAY FIXTURE"}
+                      {isPast ? "MATCH CONCLUDED" : fixture.is_home ? "BUY TICKETS" : "AWAY FIXTURE"}
                     </button>
                   </div>
                 </div>
               </motion.div>
-            ))
+            );
+          })
           )}
 
         </div>

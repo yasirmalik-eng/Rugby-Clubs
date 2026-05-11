@@ -41,39 +41,71 @@ function buildConfirmationEmail(session: Stripe.Checkout.Session, items: Array<{
   const total = items.reduce((s, i) => s + i.unitPricePence * i.quantity, 0);
   const rows = items.map(i =>
     `<tr>
-      <td style="padding:8px 0;color:#e5e7eb;">${i.label} × ${i.quantity}</td>
-      <td style="padding:8px 0;color:#e5e7eb;text-align:right;font-weight:bold;">£${((i.unitPricePence * i.quantity) / 100).toFixed(2)}</td>
+      <td style="padding: 16px 0; border-bottom: 1px solid #e5e7eb; color: #374151; font-size: 15px;">
+        <span style="font-weight: 600; color: #111827;">${i.label}</span><br/>
+        <span style="color: #6b7280; font-size: 13px;">Quantity: ${i.quantity}</span>
+      </td>
+      <td style="padding: 16px 0; border-bottom: 1px solid #e5e7eb; text-align: right; color: #111827; font-weight: 600; font-size: 15px;">
+        £${((i.unitPricePence * i.quantity) / 100).toFixed(2)}
+      </td>
     </tr>`
   ).join("");
 
   return `
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/></head>
-<body style="background:#0a0a0a;font-family:system-ui,sans-serif;margin:0;padding:0;">
-  <div style="max-width:560px;margin:40px auto;background:#111;border:1px solid #1f1f1f;border-radius:16px;overflow:hidden;">
-    <div style="background:linear-gradient(135deg,#7f1d1d,#450a0a);padding:32px;text-align:center;">
-      <img src="https://northwalesrugby.com/logo.png" alt="NWC" width="64" style="border-radius:50%;border:2px solid #dc2626;"/>
-      <h1 style="color:#fff;font-size:24px;font-weight:900;margin:16px 0 4px;">Booking Confirmed! 🏉</h1>
-      <p style="color:#fca5a5;margin:0;">North Wales Crusaders</p>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 40px 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+    
+    <!-- Header -->
+    <div style="background-color: #dc2626; padding: 40px 32px; text-align: center;">
+      <h1 style="color: #ffffff; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">North Wales Crusaders</h1>
+      <p style="color: #fecaca; margin: 8px 0 0 0; font-size: 16px; font-weight: 500;">Official Ticket Confirmation</p>
     </div>
-    <div style="padding:32px;">
-      <p style="color:#d1d5db;margin:0 0 8px;">Hi ${session.customer_details?.name ?? "there"},</p>
-      <p style="color:#9ca3af;margin:0 0 24px;font-size:14px;">Your tickets have been confirmed. See you at Eirias Stadium!</p>
-      <table style="width:100%;border-collapse:collapse;border-top:1px solid #27272a;">
-        ${rows}
-        <tr style="border-top:1px solid #27272a;">
-          <td style="padding:12px 0;color:#fff;font-weight:900;font-size:18px;">Total Paid</td>
-          <td style="padding:12px 0;color:#4ade80;font-weight:900;font-size:18px;text-align:right;">£${(total / 100).toFixed(2)}</td>
-        </tr>
-      </table>
-      <div style="margin-top:24px;padding:16px;background:#1a1a1a;border-radius:12px;border:1px solid #27272a;">
-        <p style="color:#6b7280;font-size:12px;margin:0;">Order reference: <span style="color:#9ca3af;font-family:monospace;">${session.id.slice(0, 16).toUpperCase()}</span></p>
+
+    <!-- Body -->
+    <div style="padding: 40px 32px;">
+      <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Hello ${session.customer_details?.name?.split(' ')[0] ?? "there"},</h2>
+      <p style="color: #4b5563; font-size: 16px; line-height: 24px; margin: 0 0 32px 0;">
+        Thank you for your purchase! Your tickets are confirmed. Please bring this email with you on matchday to Eirias Stadium.
+      </p>
+
+      <!-- Order Summary -->
+      <div style="background-color: #f9fafb; border-radius: 8px; padding: 24px; margin-bottom: 32px;">
+        <h3 style="color: #111827; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 16px 0; border-bottom: 2px solid #dc2626; padding-bottom: 8px; display: inline-block;">Order Summary</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          ${rows}
+          <tr>
+            <td style="padding: 24px 0 8px 0; color: #111827; font-weight: 700; font-size: 18px;">Total Paid</td>
+            <td style="padding: 24px 0 8px 0; text-align: right; color: #dc2626; font-weight: 800; font-size: 20px;">£${(total / 100).toFixed(2)}</td>
+          </tr>
+        </table>
       </div>
-      <p style="color:#6b7280;font-size:12px;margin-top:24px;">Please bring this email or your payment confirmation as proof of purchase on matchday.</p>
+
+      <!-- Order Details -->
+      <div style="border-top: 1px solid #e5e7eb; padding-top: 24px;">
+        <p style="color: #6b7280; font-size: 14px; margin: 0 0 8px 0;">
+          <strong>Order Reference:</strong> <span style="font-family: ui-monospace, monospace; color: #111827;">${session.id.slice(0, 16).toUpperCase()}</span>
+        </p>
+        <p style="color: #6b7280; font-size: 14px; margin: 0;">
+          <strong>Date:</strong> ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+        </p>
+      </div>
     </div>
-    <div style="padding:16px 32px;border-top:1px solid #1f1f1f;text-align:center;">
-      <p style="color:#4b5563;font-size:12px;margin:0;">© 2026 North Wales Crusaders · Eirias Stadium, Colwyn Bay</p>
+
+    <!-- Footer -->
+    <div style="background-color: #1f2937; padding: 32px; text-align: center;">
+      <p style="color: #9ca3af; font-size: 13px; margin: 0 0 8px 0;">
+        North Wales Crusaders Rugby League Club<br/>
+        Eirias Stadium, Abergele Road, Colwyn Bay, LL29 7SP
+      </p>
+      <p style="color: #6b7280; font-size: 12px; margin: 0;">
+        © ${new Date().getFullYear()} North Wales Crusaders. All rights reserved.
+      </p>
     </div>
   </div>
 </body>
@@ -85,23 +117,51 @@ function buildDonationEmail(session: Stripe.Checkout.Session) {
   return `
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"/></head>
-<body style="background:#0a0a0a;font-family:system-ui,sans-serif;margin:0;padding:0;">
-  <div style="max-width:560px;margin:40px auto;background:#111;border:1px solid #1f1f1f;border-radius:16px;overflow:hidden;">
-    <div style="background:linear-gradient(135deg,#7f1d1d,#450a0a);padding:32px;text-align:center;">
-      <img src="https://northwalesrugby.com/logo.png" alt="NWC" width="64" style="border-radius:50%;border:2px solid #dc2626;"/>
-      <h1 style="color:#fff;font-size:24px;font-weight:900;margin:16px 0 4px;">Thank you! ❤️</h1>
-      <p style="color:#fca5a5;margin:0;">North Wales Crusaders</p>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 40px 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+    
+    <!-- Header -->
+    <div style="background-color: #dc2626; padding: 40px 32px; text-align: center;">
+      <div style="background-color: #ffffff; width: 64px; height: 64px; border-radius: 32px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center;">
+        <span style="font-size: 32px; line-height: 1;">❤️</span>
+      </div>
+      <h1 style="color: #ffffff; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">Thank You!</h1>
+      <p style="color: #fecaca; margin: 8px 0 0 0; font-size: 16px; font-weight: 500;">North Wales Crusaders</p>
     </div>
-    <div style="padding:32px;text-align:center;">
-      <p style="color:#d1d5db;margin:0 0 16px;">Hi ${session.customer_details?.name ?? "there"},</p>
-      <p style="color:#9ca3af;margin:0 0 24px;font-size:16px;line-height:1.5;">
-        Thank you so much for your generous donation of <strong style="color:#fff;">£${amount}</strong>. 
-        Your support helps us keep professional rugby thriving in North Wales.
+
+    <!-- Body -->
+    <div style="padding: 40px 32px; text-align: center;">
+      <h2 style="color: #111827; font-size: 22px; font-weight: 700; margin: 0 0 16px 0;">Hello ${session.customer_details?.name?.split(' ')[0] ?? "there"},</h2>
+      
+      <p style="color: #4b5563; font-size: 18px; line-height: 28px; margin: 0 0 32px 0;">
+        We are incredibly grateful for your generous donation of 
+        <span style="color: #dc2626; font-weight: 800; font-size: 20px;">£${amount}</span>.
+      </p>
+
+      <div style="background-color: #f9fafb; border-radius: 8px; padding: 24px; margin-bottom: 32px; text-align: left;">
+        <p style="color: #4b5563; font-size: 15px; line-height: 24px; margin: 0; font-style: italic;">
+          "Your support directly helps us maintain Eirias Stadium, support our academy programs, and keep professional rugby thriving in North Wales. We couldn't do it without passionate supporters like you."
+        </p>
+      </div>
+
+      <p style="color: #6b7280; font-size: 14px; margin: 0;">
+        <strong>Reference:</strong> <span style="font-family: ui-monospace, monospace;">${session.id.slice(0, 16).toUpperCase()}</span>
       </p>
     </div>
-    <div style="padding:16px 32px;border-top:1px solid #1f1f1f;text-align:center;">
-      <p style="color:#4b5563;font-size:12px;margin:0;">© 2026 North Wales Crusaders · Eirias Stadium, Colwyn Bay</p>
+
+    <!-- Footer -->
+    <div style="background-color: #1f2937; padding: 32px; text-align: center;">
+      <p style="color: #9ca3af; font-size: 13px; margin: 0 0 8px 0;">
+        North Wales Crusaders Rugby League Club<br/>
+        Eirias Stadium, Abergele Road, Colwyn Bay, LL29 7SP
+      </p>
+      <p style="color: #6b7280; font-size: 12px; margin: 0;">
+        © ${new Date().getFullYear()} North Wales Crusaders. All rights reserved.
+      </p>
     </div>
   </div>
 </body>

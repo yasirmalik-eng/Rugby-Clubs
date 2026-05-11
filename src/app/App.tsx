@@ -31,6 +31,7 @@ import { BlogAdmin } from "./pages/admin/BlogAdmin";
 import { TicketsAdmin } from "./pages/admin/TicketsAdmin";
 import { OrdersAdmin } from "./pages/admin/OrdersAdmin";
 import { SponsorsAdmin } from "./pages/admin/SponsorsAdmin";
+import { UsersAdmin } from "./pages/admin/UsersAdmin";
 
 function AppShell() {
   const location = useLocation();
@@ -69,6 +70,7 @@ function AppShell() {
             <Route path="tickets" element={<TicketsAdmin />} />
             <Route path="sponsors" element={<SponsorsAdmin />} />
             <Route path="orders" element={<OrdersAdmin />} />
+            <Route path="users" element={<UsersAdmin />} />
           </Route>
         </Routes>
       </main>

@@ -113,31 +113,6 @@ export function FixturesAdmin() {
       return;
     }
 
-    const ticketIds = (fixtureTickets ?? []).map((ticket) => ticket.id);
-
-    if (ticketIds.length > 0) {
-      const { count: orderItemCount, error: orderItemsError } = await supabase
-        .from("order_items")
-        .select("id", { count: "exact", head: true })
-        .in("ticket_id", ticketIds);
-
-      if (orderItemsError) {
-        setError(orderItemsError.message);
-        toast.error(orderItemsError.message);
-        setDeleting(false);
-        return;
-      }
-
-      if ((orderItemCount ?? 0) > 0) {
-        const message =
-          "This fixture cannot be deleted because tickets from it are already linked to customer orders.";
-        setError(message);
-        toast.error(message);
-        setDeleting(false);
-        return;
-      }
-    }
-
     const { error } = await supabase.from("fixtures").delete().eq("id", deleteTarget.id);
 
     if (error) {
