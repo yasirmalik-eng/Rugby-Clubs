@@ -37,12 +37,13 @@ async function sendEmail(to: string, subject: string, html: string) {
   });
 }
 
-function buildConfirmationEmail(session: Stripe.Checkout.Session, items: Array<{ label: string; quantity: number; unitPricePence: number }>) {
+function buildConfirmationEmail(session: Stripe.Checkout.Session, items: Array<{ label: string; quantity: number; unitPricePence: number; fixtureDetails?: string }>) {
   const total = items.reduce((s, i) => s + i.unitPricePence * i.quantity, 0);
   const rows = items.map(i =>
     `<tr>
       <td style="padding: 16px 0; border-bottom: 1px solid #e5e7eb; color: #374151; font-size: 15px;">
         <span style="font-weight: 600; color: #111827;">${i.label}</span><br/>
+        ${i.fixtureDetails ? `<span style="color: #dc2626; font-size: 13px; font-weight: 500;">${i.fixtureDetails}</span><br/>` : ''}
         <span style="color: #6b7280; font-size: 13px;">Quantity: ${i.quantity}</span>
       </td>
       <td style="padding: 16px 0; border-bottom: 1px solid #e5e7eb; text-align: right; color: #111827; font-weight: 600; font-size: 15px;">
@@ -247,8 +248,8 @@ Deno.serve(async (req: Request) => {
         });
       }
 
-      // Fetch ticket details
-      const { data: tickets } = await supabase.from("tickets").select("id, label, price_gbp, type").in("id", ticketIds);
+      // Fetch ticket details including fixture details if applicable
+      const { data: tickets } = await supabase.from("tickets").select("id, label, price_gbp, type, fixtures(opponent, match_date)").in("id", ticketIds);
       const ticketMap = Object.fromEntries((tickets ?? []).map((t) => [t.id, t]));
 
       // Update order status + buyer details
@@ -268,7 +269,7 @@ Deno.serve(async (req: Request) => {
       if (!order) throw new Error("Order update failed for session: " + session.id);
 
       // Insert order items + update sold_count
-      const itemsForEmail: Array<{ label: string; quantity: number; unitPricePence: number }> = [];
+      const itemsForEmail: Array<{ label: string; quantity: number; unitPricePence: number; fixtureDetails?: string }> = [];
 
       for (let i = 0; i < ticketIds.length; i++) {
         const ticket = ticketMap[ticketIds[i]];
@@ -295,7 +296,14 @@ Deno.serve(async (req: Request) => {
           }]);
         }
 
-        itemsForEmail.push({ label: ticket.label, quantity: qty, unitPricePence: ticket.price_gbp });
+        // Format fixture details for email if present
+        let fixtureDetails;
+        if (ticket.fixtures && !Array.isArray(ticket.fixtures)) {
+          const dateStr = new Date(ticket.fixtures.match_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+          fixtureDetails = `vs ${ticket.fixtures.opponent} (${dateStr})`;
+        }
+
+        itemsForEmail.push({ label: ticket.label, quantity: qty, unitPricePence: ticket.price_gbp, fixtureDetails });
       }
 
       // Send confirmation email to buyer
