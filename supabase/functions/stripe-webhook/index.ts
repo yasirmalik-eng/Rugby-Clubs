@@ -145,7 +145,7 @@ function buildDonationEmail(session: Stripe.Checkout.Session) {
 
       <div style="background-color: #f9fafb; border-radius: 8px; padding: 24px; margin-bottom: 32px; text-align: left;">
         <p style="color: #4b5563; font-size: 15px; line-height: 24px; margin: 0; font-style: italic;">
-          "Your support directly helps us maintain Eirias Stadium, support our academy programs, and keep professional rugby thriving in North Wales. We couldn't do it without passionate supporters like you."
+          "Your support directly helps us maintain North Wales Crusaders and keep professional rugby thriving in North Wales. We couldn't do it without passionate supporters like you."
         </p>
       </div>
 
