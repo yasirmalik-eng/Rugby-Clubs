@@ -55,7 +55,19 @@ export function TicketsPage() {
 
   const { tickets, loading: ticketsLoading } = useTickets(fixtureId);
   const { tickets: seasonPasses, loading: passesLoading } = useTickets(null);
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const [cart, setCart] = useState<Record<string, number>>(() => {
+    try {
+      const saved = sessionStorage.getItem("ticket_cart");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("ticket_cart", JSON.stringify(cart));
+  }, [cart]);
+
   const [checkingOut, setCheckingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -87,10 +99,7 @@ export function TicketsPage() {
   const handleCheckout = async () => {
     if (totalItems === 0) return;
 
-    if (containsSeasonPass && !user) {
-      navigate("/auth/login");
-      return;
-    }
+
 
     for (const item of cartLineItems) {
       const available = item.ticket.availability - item.ticket.sold_count;
@@ -122,14 +131,22 @@ export function TicketsPage() {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        // Supabase functions return the response body in `error.context` if available
+        if (error.context && typeof error.context.json === 'function') {
+          const contextData = await error.context.json().catch(() => null);
+          throw new Error(contextData?.error || error.message);
+        }
+        throw error;
+      }
       if (data?.url) {
         window.location.href = data.url;
       } else {
         throw new Error("Stripe checkout URL was not returned.");
       }
-    } catch (checkoutError: unknown) {
-      setError(checkoutError instanceof Error ? checkoutError.message : "Checkout failed. Please try again.");
+    } catch (checkoutError: any) {
+      console.error("Checkout Error:", checkoutError);
+      setError(checkoutError?.message || "Checkout failed. Please try again.");
     } finally {
       setCheckingOut(false);
     }
@@ -297,11 +314,7 @@ export function TicketsPage() {
             {showSeasonPasses && (
               <>
                 <h2 className="mb-8 text-center text-3xl font-black text-white">Season Tickets</h2>
-                {!user && (
-                  <p className="mb-4 text-sm text-amber-400">
-                    Sign in before buying a season pass so it can be attached to your account.
-                  </p>
-                )}
+
 
                 <div className="mb-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {seasonPasses.map((pass) => {

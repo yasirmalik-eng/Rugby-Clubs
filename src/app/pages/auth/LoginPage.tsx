@@ -1,11 +1,13 @@
 import { motion } from "motion/react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Lock, Mail, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { supabase } from "../../../lib/supabase";
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectUrl = searchParams.get("redirect") || "/admin";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +19,7 @@ export function LoginPage() {
     setLoading(true); setError(null);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { setError(error.message); setLoading(false); return; }
-    navigate("/admin");
+    navigate(redirectUrl);
   };
 
   const inputClass = "w-full pl-11 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors text-sm";

@@ -50,10 +50,8 @@ Deno.serve(async (req: Request) => {
       if (item.quantity > ticket.max_per_order) {
         throw new Error(`${ticket.label} exceeds the maximum per order`);
       }
-      if (ticket.type === "season_pass" && !userId) {
-        throw new Error("You must sign in before buying a season pass");
-      }
-      if (fixtureId && ticket.fixture_id !== fixtureId) {
+
+      if (fixtureId && ticket.fixture_id !== null && ticket.fixture_id !== fixtureId) {
         throw new Error(`${ticket.label} does not belong to this fixture`);
       }
       if (ticket.availability - ticket.sold_count < item.quantity) {
