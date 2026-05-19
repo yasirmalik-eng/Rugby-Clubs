@@ -251,19 +251,19 @@ export function BlogAdmin() {
 
   if (view === "editor") {
     return (
-      <div className="p-8 max-w-4xl">
+      <div className="p-4 sm:p-8 max-w-4xl">
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          className="hidden"
+          style={{ position: "absolute", opacity: 0, width: 0, height: 0, overflow: "hidden", pointerEvents: "none" }}
           onChange={handleImageUpload}
         />
-        <div className="flex items-center gap-4 mb-8">
-          <button onClick={() => setView("list")} className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1">
+        <div className="flex items-center gap-3 mb-6">
+          <button type="button" onClick={() => setView("list")} className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1 shrink-0">
             <X className="w-4 h-4" /> Cancel
           </button>
-          <h1 className="text-2xl font-black text-white">{editPost.id ? "Edit Post" : "New Post"}</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-white truncate">{editPost.id ? "Edit Post" : "New Post"}</h1>
         </div>
 
         <div className="space-y-5">
@@ -280,17 +280,17 @@ export function BlogAdmin() {
             <textarea value={editPost.excerpt ?? ""} onChange={(e) => setEditPost((prev) => ({ ...prev, excerpt: e.target.value }))} rows={2} className={`${inputClass} resize-none`} placeholder="Brief description of the article..." />
           </div>
           <div>
-            <label className="text-gray-400 text-sm mb-1.5 block">Featured Image URL</label>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <label className="text-gray-400 text-sm mb-1.5 block">Featured Image</label>
+            <div className="flex flex-col gap-2">
               <input value={editPost.featured_image_url ?? ""} onChange={(e) => setEditPost((prev) => ({ ...prev, featured_image_url: e.target.value }))} placeholder="https://... or upload below" className={inputClass} />
               <button
                 type="button"
                 onClick={() => openFilePicker("featured")}
                 disabled={uploadingTarget !== null}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10 disabled:opacity-60"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10 disabled:opacity-60"
               >
                 {uploadingTarget === "featured" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                Upload
+                Upload Photo
               </button>
             </div>
             {editPost.featured_image_url && (
@@ -304,8 +304,8 @@ export function BlogAdmin() {
           <div>
             <label className="text-gray-400 text-sm mb-3 block">Content *</label>
 
-            <div className="mb-3 rounded-2xl border border-white/10 bg-black/30 p-3">
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-3 rounded-2xl border border-white/10 bg-black/30 p-2.5">
+              <div className="flex flex-wrap gap-1.5">
                 <button type="button" onClick={() => runEditorCommand("bold")} className={toolbarButtonClass} title="Bold">
                   <Bold className="h-4 w-4" />
                 </button>
@@ -360,7 +360,6 @@ export function BlogAdmin() {
                 <button type="button" onClick={() => runEditorCommand("removeFormat")} className={toolbarButtonClass} title="Clear formatting">
                   <Eraser className="h-4 w-4" />
                 </button>
-                
               </div>
             </div>
 
@@ -370,18 +369,16 @@ export function BlogAdmin() {
               suppressContentEditableWarning
               onInput={syncEditorContent}
               onBlur={syncEditorContent}
-              className="min-h-[420px] w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm leading-7 text-white focus:border-red-600 focus:outline-none [&_a]:text-red-400 [&_blockquote]:border-l-4 [&_blockquote]:border-red-600 [&_blockquote]:pl-4 [&_h2]:mt-6 [&_h2]:text-3xl [&_h2]:font-black [&_h3]:mt-5 [&_h3]:text-2xl [&_h3]:font-black [&_hr]:my-6 [&_img]:my-4 [&_img]:rounded-xl [&_img]:shadow-lg [&_li]:ml-5 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-4 [&_strong]:font-bold [&_ul]:list-disc [&_ul]:pl-6"
+              className="min-h-[300px] sm:min-h-[420px] w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm leading-7 text-white focus:border-red-600 focus:outline-none [&_a]:text-red-400 [&_blockquote]:border-l-4 [&_blockquote]:border-red-600 [&_blockquote]:pl-4 [&_h2]:mt-6 [&_h2]:text-3xl [&_h2]:font-black [&_h3]:mt-5 [&_h3]:text-2xl [&_h3]:font-black [&_hr]:my-6 [&_img]:my-4 [&_img]:max-w-full [&_img]:rounded-xl [&_img]:shadow-lg [&_li]:ml-5 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-4 [&_strong]:font-bold [&_ul]:list-disc [&_ul]:pl-6"
               data-placeholder="Write your article here..."
             />
-            <p className="mt-2 text-xs text-gray-500">
-              Use the toolbar to format your article content.
-            </p>
+            <p className="mt-2 text-xs text-gray-500">Use the toolbar to format your article content.</p>
           </div>
-          <div className="flex gap-3 pt-2">
-            <button onClick={() => handleSave(false)} disabled={saving} className="flex items-center gap-2 px-5 py-3 bg-white/5 border border-white/10 text-white rounded-xl font-bold text-sm hover:bg-white/10 disabled:opacity-60">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2 pb-6">
+            <button type="button" onClick={() => handleSave(false)} disabled={saving} className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-5 py-3.5 bg-white/5 border border-white/10 text-white rounded-xl font-bold text-sm hover:bg-white/10 disabled:opacity-60">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Save Draft
             </button>
-            <button onClick={() => handleSave(true)} disabled={saving} className="flex items-center gap-2 px-5 py-3 bg-green-700 hover:bg-green-600 text-white rounded-xl font-bold text-sm disabled:opacity-60">
+            <button type="button" onClick={() => handleSave(true)} disabled={saving} className="flex flex-1 sm:flex-none items-center justify-center gap-2 px-5 py-3.5 bg-green-700 hover:bg-green-600 text-white rounded-xl font-bold text-sm disabled:opacity-60">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />} Publish
             </button>
           </div>
@@ -391,14 +388,14 @@ export function BlogAdmin() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-black text-white">Blog</h1>
-          <p className="text-gray-500 mt-1">Create and manage news articles</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-white">Blog</h1>
+          <p className="text-gray-500 mt-1 text-sm">Create and manage news articles</p>
         </div>
-        <button onClick={openNew} className="flex items-center gap-2 px-5 py-2.5 bg-red-700 hover:bg-red-600 text-white rounded-xl font-bold text-sm transition-colors">
-          <Plus className="w-4 h-4" /> New Post
+        <button type="button" onClick={openNew} className="flex items-center gap-2 px-4 py-2.5 bg-red-700 hover:bg-red-600 text-white rounded-xl font-bold text-sm transition-colors shrink-0">
+          <Plus className="w-4 h-4" /> <span className="hidden xs:inline">New Post</span><span className="xs:hidden">New</span>
         </button>
       </div>
 
@@ -412,25 +409,31 @@ export function BlogAdmin() {
         <div className="space-y-3">
           {posts.length === 0 && <p className="text-center text-gray-600 py-12">No posts yet. Create your first article!</p>}
           {posts.map((post) => (
-            <motion.div key={post.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-xl px-5 py-4 hover:bg-white/[0.07] transition-colors">
-              {post.featured_image_url && <img src={post.featured_image_url} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />}
-              <div className="flex-1 min-w-0">
-                <div className="text-white font-bold text-sm truncate">{post.title}</div>
-                <div className="text-gray-500 text-xs mt-0.5">{post.published_at ? format(new Date(post.published_at), "d MMM yyyy") : "Draft"}</div>
+            <motion.div key={post.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 sm:flex-row sm:items-center sm:gap-4 sm:px-5 sm:py-4 hover:bg-white/[0.07] transition-colors">
+              {/* Top row: thumbnail + title/date */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                {post.featured_image_url && <img src={post.featured_image_url} alt="" className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg object-cover flex-shrink-0" />}
+                <div className="min-w-0 flex-1">
+                  <div className="text-white font-bold text-sm leading-snug line-clamp-2 sm:truncate">{post.title}</div>
+                  <div className="text-gray-500 text-xs mt-0.5">{post.published_at ? format(new Date(post.published_at), "d MMM yyyy") : "Draft"}</div>
+                </div>
               </div>
-              <span className={`px-2.5 py-1 rounded-full text-xs font-bold flex-shrink-0 ${post.is_published ? "bg-green-800 text-green-200" : "bg-gray-800 text-gray-400"}`}>
-                {post.is_published ? "Published" : "Draft"}
-              </span>
-              <div className="flex gap-2 flex-shrink-0">
-                <button onClick={() => handleTogglePublish(post)} title={post.is_published ? "Unpublish" : "Publish"} className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
-                  {post.is_published ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                </button>
-                <button onClick={() => openEdit(post)} className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
-                  <Pencil className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => handleDelete(post.id)} className="p-1.5 rounded-lg bg-red-900/20 hover:bg-red-900/40 text-red-400 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+              {/* Bottom row on mobile: status badge + actions */}
+              <div className="flex items-center justify-between sm:contents gap-2">
+                <span className={`px-2.5 py-1 rounded-full text-xs font-bold shrink-0 ${post.is_published ? "bg-green-800 text-green-200" : "bg-gray-800 text-gray-400"}`}>
+                  {post.is_published ? "Published" : "Draft"}
+                </span>
+                <div className="flex gap-2 shrink-0">
+                  <button type="button" onClick={() => handleTogglePublish(post)} title={post.is_published ? "Unpublish" : "Publish"} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+                    {post.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                  <button type="button" onClick={() => openEdit(post)} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors">
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  <button type="button" onClick={() => handleDelete(post.id)} className="p-2 rounded-lg bg-red-900/20 hover:bg-red-900/40 text-red-400 transition-colors">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}
