@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { WelshHero } from "../components/WelshHero";
-import { Ticket, Calendar, ArrowRight, Flame } from "lucide-react";
+import { Ticket, Calendar, ArrowRight, Flame, FileText } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useFixtures } from "../../hooks/useFixtures";
 import { useBlogPosts } from "../../hooks/useBlogPosts";
@@ -101,6 +101,16 @@ export function HomePage() {
                 VIEW FIXTURES
                 <ArrowRight className="ml-2 inline h-5 w-5" />
               </button>
+
+              <a
+                href="/programme-v-salford-31st-may-2026.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-700 to-green-800 px-8 py-4 font-bold text-white transition-all hover:from-green-600 hover:to-green-700 border border-green-600 shadow-lg shadow-green-900/30 cursor-pointer"
+              >
+                <FileText className="h-5 w-5" />
+                VIEW PROGRAMME (PDF)
+              </a>
             </div>
           </motion.div>
         </div>

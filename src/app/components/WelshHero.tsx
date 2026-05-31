@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Ticket, Calendar } from "lucide-react";
+import { Ticket, Calendar, FileText, Download } from "lucide-react";
 import { useNavigate } from "react-router";
 
 export function WelshHero() {
@@ -93,6 +93,18 @@ export function WelshHero() {
               <Calendar className="w-6 h-6 group-hover:scale-110 transition-transform" />
               VIEW FIXTURES
             </motion.button>
+
+            <motion.a
+              whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(34,197,94,0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              href="/programme-v-salford-31st-may-2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group px-10 py-5 bg-gradient-to-r from-green-700 to-green-800 text-white rounded-xl font-bold shadow-xl shadow-green-900/50 transition-all duration-300 border-2 border-green-600 flex items-center gap-3 hover:from-green-600 hover:to-green-700 cursor-pointer"
+            >
+              <FileText className="w-6 h-6 group-hover:scale-110 transition-transform" />
+              MATCH PROGRAMME
+            </motion.a>
           </motion.div>
         </motion.div>
       </div>
