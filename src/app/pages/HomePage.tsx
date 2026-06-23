@@ -1,11 +1,14 @@
+import React from "react";
 import { motion } from "motion/react";
 import { WelshHero } from "../components/WelshHero";
-import { Ticket, Calendar, ArrowRight, Flame, FileText } from "lucide-react";
+import { Ticket, Calendar, ArrowRight, Flame, FileText, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useFixtures } from "../../hooks/useFixtures";
 import { useBlogPosts } from "../../hooks/useBlogPosts";
 import { useSponsors } from "../../hooks/useSponsors";
 import { format } from "date-fns";
+
+const SHOP_URL = "https://northwalesrugby.myshopify.com";
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -19,6 +22,49 @@ export function HomePage() {
   return (
     <div>
       <WelshHero />
+
+      <section className="relative overflow-hidden border-y border-white/10 bg-gradient-to-r from-red-950/80 via-black to-green-950/40 py-16 md:py-20">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1574629810360-7abca066ff47?w=1920')] bg-cover bg-center" />
+        <div className="container relative z-10 mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mx-auto flex max-w-4xl flex-col items-center gap-6 text-center md:flex-row md:gap-10 md:text-left"
+          >
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/5 backdrop-blur-sm">
+              <ShoppingBag className="h-12 w-12 text-red-400" />
+            </div>
+
+            <div className="flex-1">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-300">
+                  Official Club Store
+                </span>
+              </div>
+              <h2 className="mb-3 text-3xl font-black text-white md:text-4xl">
+                2026/27 Season Collection
+              </h2>
+              <p className="max-w-xl text-base leading-relaxed text-gray-400">
+                Shop authentic North Wales Crusaders match day kit, training apparel, and
+                fan merchandise. Available exclusively through our official online store, with
+                every purchase supporting the club.
+              </p>
+            </div>
+
+            <a
+              href={SHOP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-700 to-red-800 px-10 py-4 font-bold text-white shadow-lg shadow-red-900/40 transition-all hover:from-red-600 hover:to-red-700"
+            >
+              <ShoppingBag className="h-5 w-5" />
+              Visit Store
+              <ArrowRight className="h-5 w-5" />
+            </a>
+          </motion.div>
+        </div>
+      </section>
 
       <section className="relative overflow-hidden bg-gradient-to-b from-black to-red-950/30 py-24">
         <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1671042299447-f6f67b313f32?w=1920')] bg-cover bg-center" />

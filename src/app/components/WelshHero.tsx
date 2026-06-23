@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Ticket, Calendar, FileText, Download } from "lucide-react";
+import { Ticket, Calendar, FileText } from "lucide-react";
 import { useNavigate } from "react-router";
 
 export function WelshHero() {
